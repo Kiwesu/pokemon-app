@@ -46,13 +46,26 @@ Legislative Requirements: Axios is centered around making network requests for p
 
 Organisational Requirements: Axios is an established, well-supported library, constructed to Holmesglen's standards of quality for third-party tools. Its usage provides support for secure data transfer protocols (HTTPS) and may be managed in a Content Security Policy (CSP) for additional security.
 
-CREDITS: 
+Reference: 
+Content Security Policy (CSP) Documentation: MDN Web Docs - Content Security Policy
+Client-Side Security Best Practices: Tutsplus - Client-Side Security Best Practices
 
-Pokeball Icon: 
-Slackmojis.com - https://slackmojis.com/emojis/186-pokeball 
-Made by: https://x.com/jkupferman
+### ✨ Asset Attributions & Credits ✨
 
-Contact page wallpaper: 
-alphacoders.com - https://wall.alphacoders.com/big.php?i=1329990
-Made by: https://alphacoders.com/users/profile/227699/patrika 
+All assets used in this project are for **personal, non-commercial academic purposes** only, adhering to their respective terms of use.
+
+* **Poké Ball Icon:**
+    * **Source:** [Slackmojis.com](https://slackmojis.com/emojis/186-pokeball)
+    * **Artist/Creator:** [Jake Kupferman (via X.com)](https://x.com/jkupferman)
+    * **Licence/Terms:** Used as per Slackmojis' general terms for personal use.
+
+* **Pikachu & Bulbasaur Background Image:**
+    * **Source:** [Wallpapers-Clan.com](https://wallpapers-clan.com/desktop-wallpapers/pikachu-bulbasaur-cute/) 
+     
+    * **Licence/Terms:** Used under the terms of Wallpapers-Clan.com, which permits personal, non-commercial use.
+
+* **Contact Page Wallpaper:**
+    * **Source:** [Alpha Coders - Wallpaper Abyss](https://wall.alphacoders.com/big.php?i=1329990)
+    * **Artist/Creator:** [patrika (via Alpha Coders)](https://alphacoders.com/users/profile/227699/patrika)
+    * **Licence/Terms:** Used as per Alpha Coders' general terms, typically for personal desktop use, non-commercial.
 

@@ -47,8 +47,8 @@ Legislative Requirements: Axios is centered around making network requests for p
 Organisational Requirements: Axios is an established, well-supported library, constructed to Holmesglen's standards of quality for third-party tools. Its usage provides support for secure data transfer protocols (HTTPS) and may be managed in a Content Security Policy (CSP) for additional security.
 
 Reference: 
-Content Security Policy (CSP) Documentation: MDN Web Docs - Content Security Policy
-Client-Side Security Best Practices: Tutsplus - Client-Side Security Best Practices
+Content Security Policy (CSP) Documentation: MDN Web Docs - Content Security Policy (https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Security-Policy) 
+Client-Side Security Best Practices: Tutsplus - Client-Side Security Best Practices (https://code.tutsplus.com/client-side-security-best-practices--net-35677a)
 
 ### ✨ Asset Attributions & Credits ✨
 

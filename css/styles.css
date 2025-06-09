@@ -1,0 +1,344 @@
+/**
+ * @file styles.css
+ * @description Central stylesheet for the Pokémon Tracker application.
+ * This file defines global styles, UI component styling,
+ * and responsive adjustments, leveraging CSS variables for maintainability.
+ */
+
+/*
+ * @section CSS Reset
+ * @description A universal reset to normalize default browser styling.
+ * Ensures consistent rendering across different browsers by removing
+ * default padding, margin, and setting box-sizing to border-box.
+ */
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box; /* Includes padding and border in the element's total width and height */
+}
+
+/**
+ * @section Root CSS Variables
+ * @description Defines application-wide custom properties (variables) for consistent theming.
+ * Centralizes common values like colors, fonts, spacing units, and border-radii,
+ * facilitating easy updates and ensuring design consistency throughout the project.
+ */
+:root {
+    /* --- Color Palette --- */
+    --primary-color: #ffcb05; /* Inspired by Pokémon Yellow; used for accents, active states, and primary buttons. */
+    --secondary-color: #3d7dca; /* Inspired by Pokémon Blue; used for borders, secondary elements, and navigation links. */
+    --dark-color: #003a70; /* Deep blue/black; ideal for primary text and strong contrasts. */
+    --light-color: #f5f5f5; /* Off-white/light grey; used for subtle backgrounds and light elements. */
+    --danger-color: #ff0000; /* Standard red for error messages and warnings. */
+
+    /* --- Typography --- */
+    --font-main: 'Roboto', sans-serif; /* Modern, readable font for general body text. */
+    --font-accent: 'Fredoka One', cursive; /* Playful, bold font used for main titles and logos (e.g., "Pokémon Tracker"). */
+    --font-pixel: 'Press Start 2P', cursive; /* Retro pixel-art font; reserved for specific thematic elements or headers. */
+
+    /* --- Spacing System --- */
+    --spacing-sm: 8px;  /* Smallest unit for internal padding and gaps. */
+    --spacing-md: 18px; /* Medium unit for common component spacing. */
+    --spacing-lg: 24px; /* Larger unit for section separation and main container padding. */
+
+    /* --- UI Elements --- */
+    --border-radius: 12px; /* Standard rounded corner radius for cards, buttons, and inputs. */
+    --btn-hover-light: #ffd700; /* Slightly lighter yellow for interactive button hover effects. */
+}
+
+/**
+ * @section Base Body Styles
+ * @description Global styling applied to the `body` element.
+ * Sets the main background, default typography, and foundational flexbox layout
+ * to structure the entire application vertically.
+ */
+body {
+    background: url('/img/pika_balba_img.jpg') center center/cover no-repeat fixed;
+    font-family: var(--font-main);
+    background-color: var(--light-color); /* Fallback or overlay color */
+    margin: 0;
+    padding-top: 70px; /* Crucial for preventing content overlap with the fixed navigation bar. */
+    color: var(--dark-color);
+    display: flex; /* Enables flexible box layout for vertical stacking of main content areas. */
+    flex-direction: column; /* Stacks children (like main, footer) vertically. */
+    min-height: 100vh; /* Ensures the body occupies at least the full viewport height. */
+    text-align: center; /* Default text alignment for the entire page, can be overridden locally. */
+    position: relative; /* Establishes a stacking context, relevant for fixed backgrounds in some browsers. */
+}
+
+/* @modifier .home-page-body
+ * @description Applies specific flexbox alignment to the home page body.
+ * Centers the main content both vertically and horizontally within the viewport.
+ */
+.home-page-body {
+    justify-content: center; /* Centers content along the main axis (vertical for column direction). */
+    align-items: center; /* Centers content along the cross axis (horizontal for column direction). */
+}
+
+/**
+ * @section Navigation Bar Styles
+ * @description Styling for the fixed top navigation bar, featuring a modern glassmorphism effect.
+ * Ensures clear visibility and smooth transitions for navigation links.
+ */
+.navbar-glass {
+    background-color: rgba(255, 255, 255, 0.2) !important; /* Semi-transparent background for the glass effect. */
+    backdrop-filter: blur(10px); /* Applies the blur effect, a key component of glassmorphism. */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds subtle depth to the navbar. */
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
+    z-index: 1000; /* Ensures the navbar always stays on top of other page content. */
+}
+
+/* @element .nav-link
+ * @description Styles for individual navigation links within the navbar.
+ * Overrides Bootstrap's default link colors and adds hover transitions.
+ */
+.navbar-glass .nav-link {
+    color: var(--secondary-color) !important; /* Default link color, using `!important` to override Bootstrap. */
+    font-weight: bold;
+    transition: color 0.2s ease-in-out; /* Smooth color change on hover/focus. */
+}
+
+.navbar-glass .nav-link:hover {
+    color: var(--primary-color) !important; /* Accentuates links on hover. */
+}
+
+.navbar-glass .nav-link.active {
+    color: var(--primary-color) !important; /* Highlights the currently active page link. */
+}
+
+/**
+ * @section General Container Styles
+ * @description Defines a consistent `container` class for structuring content sections.
+ * Ensures uniform padding, maximum width, and horizontal centering for readability.
+ */
+.container {
+    position: relative; /* Necessary for proper z-index layering. */
+    z-index: 10; /* Keeps container content above background elements. */
+    padding: var(--spacing-lg);
+    width: 100%;
+    max-width: 800px; /* Limits content width for optimal readability on larger screens. */
+    margin: 0 auto; /* Horizontally centers the container within its parent. */
+}
+
+/**
+ * @section Main Page Title (Pokémon Logo)
+ * @description Applies a distinct, branded style to the primary `h1` title on the home page.
+ * Features a custom font and a retro text-shadow effect.
+ */
+.pokemon-logo {
+    font-family: var(--font-accent); /* Uses the playful 'Fredoka One' font for branding. */
+    font-size: 4.5rem; /* Large, impactful font size for the main logo. */
+    color: var(--primary-color); /* The iconic Pokémon yellow. */
+    text-shadow:
+        -3px -3px 0 var(--secondary-color), /* Creates a vibrant 3D pixelated outline effect. */
+        3px -3px 0 var(--secondary-color),
+        -3px 3px 0 var(--secondary-color),
+        3px 3px 0 var(--secondary-color);
+    padding: 10px;
+    border-radius: var(--border-radius);
+}
+
+/* @media Responsive Adjustments for .pokemon-logo
+ * @description Adjusts the font size of the Pokémon logo dynamically based on screen width
+ * to maintain readability and visual balance across various devices.
+ */
+@media (max-width: 768px) {
+    .pokemon-logo {
+        font-size: 3rem; /* Reduces font size for tablets and smaller desktops. */
+    }
+}
+@media (max-width: 480px) {
+    .pokemon-logo {
+        font-size: 2.5rem; /* Further reduces font size for mobile devices. */
+    }
+}
+
+/**
+ * @section Search Bar Elements
+ * @description Styling for the search input field and associated buttons,
+ * integrated within Bootstrap's `.input-group` structure.
+ */
+.input-group .form-control {
+    padding: var(--spacing-sm);
+    border: 4px solid var(--secondary-color); /* Distinct border for inputs. */
+    border-radius: var(--border-radius);
+    font-family: var(--font-main);
+    width: 100%; /* Ensures input fills available space within the group. */
+    max-width: 400px; /* Prevents overly wide input on larger screens. */
+}
+
+.input-group .btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: transform 0.2s; /* Smooth scale effect on hover. */
+    color: var(--dark-color); /* Ensures dark text on the primary yellow button. */
+}
+
+.input-group .btn-primary:hover {
+    transform: scale(1.05);
+    background-color: var(--btn-hover-light);
+}
+
+.input-group .btn-outline-secondary { /* Styling for the refresh/clear search button. */
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.input-group .btn-outline-secondary:hover {
+    background-color: var(--secondary-color);
+    color: white; /* Text turns white on hover for better contrast. */
+}
+
+/**
+ * @section Type Filter Buttons
+ * @description Styles for the Pokémon type filter buttons.
+ * Uses flexbox for responsive arrangement and includes interactive hover effects.
+ */
+.filters {
+    display: flex;
+    gap: var(--spacing-sm); /* Creates consistent spacing between buttons. */
+    justify-content: center; /* Centers the group of filter buttons. */
+    flex-wrap: wrap; /* Allows buttons to wrap to the next line on smaller screens. */
+    position: relative;
+    z-index: 3; /* Ensures filter buttons layer correctly. */
+}
+
+.type-filter {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: capitalize; /* Automatically capitalizes the first letter (e.g., "fire" becomes "Fire"). */
+    background-color: var(--secondary-color);
+    color: white;
+    transition: background-color 0.2s;
+}
+
+/* @todo Add hover/active states for type-filter buttons based on type color palette for enhanced UX. */
+
+/**
+ * @section Pokémon Card Styles
+ * @description Defines the visual presentation and interactive effects for individual Pokémon display cards.
+ * Each card features a clean layout, shadow, and a subtle lift effect on hover.
+ */
+.pokemon-card {
+    background: white;
+    border: 2px solid var(--secondary-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    width: 200px; /* Fixed width for consistent card sizing. */
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Standard shadow for depth. */
+    transition: all 0.3s; /* Smooth transition for all transform and shadow changes. */
+}
+
+.pokemon-card:hover {
+    transform: translateY(-5px); /* Creates a subtle "lift" effect, indicating interactivity. */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow when lifted. */
+}
+
+.pokemon-card img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain; /* Ensures the Pokémon image scales correctly without distortion. */
+}
+
+.pokemon-card h3 {
+    color: var(--dark-color);
+    text-transform: capitalize; /* Capitalizes Pokémon names for consistent display. */
+    margin: var(--spacing-sm) 0;
+}
+
+.pokemon-card p {
+    margin: var(--spacing-sm) 0;
+    font-size: 0.9rem;
+}
+
+/**
+ * @section Dynamic Pokémon Display Containers
+ * @description Manages the initial visibility and layout for the dynamically populated
+ * Pokémon card grids (search results and suggestions).
+ */
+#pokemon-container,
+#suggestions-container {
+    display: none; /* Hidden by default; JavaScript controls their visibility. */
+    margin-top: var(--spacing-md);
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    row-gap: var(--spacing-md);
+}
+
+/* @modifier .visible
+ * @description Overrides `display: none` to make suggestion container visible when activated by JavaScript.
+ */
+#suggestions-container.visible {
+    display: flex;
+}
+
+/**
+ * @section Contact Page Specific Styles
+ * @description Dedicated styles for the contact page, including its unique background
+ * and form wrapper aesthetics, maintaining the glassmorphism theme.
+ */
+.contact-page-body {
+    background: url('/img/contactus_img.png') center center/cover no-repeat fixed; /* Distinct background image for the contact page. */
+    text-align: left; /* Overrides global `body` center alignment for form readability. */
+}
+
+.contact-form-wrapper {
+    background-color: rgba(255, 255, 255, 0.4); /* Consistent glassmorphism background. */
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left; /* Ensures form elements and labels align left within the wrapper. */
+}
+
+/* @element .form-control (within contact-form-wrapper)
+ * @description Customizes Bootstrap's form control inputs for the contact form.
+ */
+.contact-form-wrapper .form-control {
+    background-color: rgba(255, 255, 255, 0.7); /* Slightly more opaque background for input clarity. */
+    border: 1px solid var(--secondary-color);
+    color: var(--dark-color);
+}
+.contact-form-wrapper .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(255, 203, 5, 0.25); /* Custom yellow focus ring, overriding Bootstrap. */
+}
+
+/* @element .btn-primary (within contact-form-wrapper)
+ * @description Customizes the primary button style for the contact form.
+ */
+.contact-form-wrapper .btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: var(--dark-color); /* Dark text on the yellow button for contrast. */
+    font-weight: bold;
+}
+.contact-form-wrapper .btn-primary:hover {
+    background-color: var(--btn-hover-light);
+    border-color: var(--btn-hover-light);
+}
+
+/* @element h1.pokemon-logo (on contact page)
+ * @description Adjusts the Pokémon logo header for the contact page to a slightly smaller size
+ * and ensures it is centered within its container.
+ */
+.contact-form-wrapper h1.pokemon-logo {
+    font-size: 3rem; /* Slightly smaller than the home page logo for better context. */
+    text-align: center;
+}

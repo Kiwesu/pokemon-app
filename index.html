@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokémon Tracker</title>
+    <meta name="description" content="Track and discover Pokémon by name, ID, or type. Explore the first 151 Pokémon with our interactive tracker." />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <link rel="stylesheet" href="css/styles.css" /> 
+  </head>
+  <body>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-dark navbar-glass fixed-top"
+      aria-label="Main navigation"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+          <img
+            src="img/pokeball_shake.gif" 
+            alt="Pokémon Tracker Animated Logo"
+            width="40"
+            height="40"
+            class="d-inline-block align-text-top me-2"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="index.html"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="contact.html">Contact Us</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="search-container">
+      <div class="container">
+        <h1 class="pokemon-logo text-center my-4">Pokémon Tracker</h1>
+
+        <section
+          class="search-section d-flex justify-content-center align-items-center mb-4"
+          aria-label="Pokémon Search"
+        >
+          <div class="input-group w-50">
+            <label for="pokemon-search" class="visually-hidden">Search Pokémon</label>
+            <input
+              type="text"
+              class="form-control"
+              id="pokemon-search"
+              placeholder="Search Pokémon by name or ID..."
+              aria-label="Search Pokémon by name or ID"
+            />
+            <button class="btn btn-primary" id="search-btn" aria-label="Search">Search</button>
+            <button
+              class="btn btn-outline-secondary"
+              id="refresh-btn"
+              title="Clear Search"
+              aria-label="Clear Search Results"
+            >
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+        </section>
+
+        <section class="filters mb-4" aria-label="Filter Pokémon by Type">
+          <button class="type-filter" data-type="fire" aria-label="Filter by Fire type">Fire</button>
+          <button class="type-filter" data-type="water" aria-label="Filter by Water type">Water</button>
+          <button class="type-filter" data-type="electric" aria-label="Filter by Electric type">Electric</button>
+          <button class="type-filter" data-type="grass" aria-label="Filter by Grass type">Grass</button>
+          <button class="type-filter" data-type="ice" aria-label="Filter by Ice type">Ice</button>
+          <button class="type-filter" data-type="psychic" aria-label="Filter by Psychic type">Psychic</button>
+          <button class="type-filter" data-type="fighting" aria-label="Filter by Fighting type">Fighting</button>
+        </section>
+
+        <div
+          id="suggestions-container"
+          class="row justify-content-center"
+          aria-live="polite"
+          aria-atomic="true"
+        ></div>
+        
+        <div id="pokemon-container" class="row justify-content-center" aria-live="polite"></div>
+      </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
+    
+    <script src="js/script.js"></script> 
+  </body>
+</html>

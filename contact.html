@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us - Pokémon Tracker</title>
+    <meta name="description" content="Contact the Pokémon Tracker team for support, feedback, or inquiries." />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Press+Start+2P&family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body class="contact-page-body">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark navbar-glass fixed-top" aria-label="Main navigation">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+          <img src="/img/pokeball_shake.gif" alt="Pokémon Tracker Animated Logo" width="40" height="40" class="d-inline-block align-text-top me-2" />
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="contact.html">Contact Us</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container mt-5 pt-5">
+      <div class="row justify-content-center">
+        <div class="col-12 col-md-10 col-lg-8">
+          <div class="contact-form-wrapper">
+            <h1 class="text-center mb-4 pokemon-logo">Contact Us</h1>
+
+            <form id="contact-form" novalidate>
+              <div class="mb-3">
+                <label for="nameInput" class="form-label text-white">Your Name</label>
+                <input type="text" name="name" class="form-control" id="nameInput" placeholder="Enter your name" required aria-required="true" />
+              </div>
+              <div class="mb-3">
+                <label for="emailInput" class="form-label text-white">Your Email</label>
+                <input type="email" name="email" class="form-control" id="emailInput" placeholder="Enter your email" required aria-required="true" />
+              </div>
+              <div class="mb-3">
+                <label for="messageTextarea" class="form-label text-white">Your Message</label>
+                <textarea name="message" class="form-control" id="messageTextarea" rows="5" placeholder="Enter your message" required aria-required="true"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+
+            <div id="success-message" class="alert alert-success mt-3 d-none" role="alert">
+              Your message has been sent successfully!
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/contact.js"></script>
+  </body>
+</html>

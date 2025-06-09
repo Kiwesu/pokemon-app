@@ -1,0 +1,58 @@
+Pokémon Tracker Application
+
+Project Overview:
+
+A front-end JavaScript application intended to be a Pokémon search and filtering utility. It provides the functionality to dynamically search for Pokémon based on their name,ID, and type, with an additional contact page.
+
+Technologies Used:
+HTML5, CSS3, JavaScript (ES6+): The main web languages.
+Bootstrap 5.3.0: CSS framework for responsive UI
+PokeAPI: External data.
+Visual Studio Code: IDE.
+Git & GitHub: Version control and hosting.
+
+Organisational Guidelines:
+
+This task meets the requirements of Holmesglen, including academic integrity, intellectual property rights, privacy, secure coding standards, and submission policies. The assignment is to be done alone.
+
+New Web Technology Study
+In accordance with assessment guidelines, two new web technologies were explored:
+
+1. Axios
+Description: HTTP client based on promises for cleaner and more reliable network requests.
+Benefits: Easy API calls, JSON transformation out-of-the-box, interceptors support, better error handling.
+Risks/Considerations: Adds size of dependencies, shallow learning slope.
+
+References (Example):
+Axios. (n.d.). Axios GitHub Repository. https://github.com/axios/axios (Accessed: 5 June 2025)
+MDN Web Docs. (n.d.). Using Fetch. https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API (Accessed: 5 June 2025)
+
+2. Chart.js
+Description: JavaScript library for the creation of interactive charts and graphs with HTML5 canvas.
+Benefits: Responsive, easy to use, interactive features (tooltips), well-suited for data visualization.
+Risks/Considerations: Canvas limitations, dependency size, performance with very large datasets.
+References (Example):
+Chart.js. (n.d.). Chart.js Documentation. https://www.chartjs.org/docs/latest/ (Accessed: 5 June 2025)
+Smashing Magazine. (2020). An Introduction To Data Visualization With D3.js. https://www.smashingmagazine.com/2020/02/introduction-data-visualization-d3js/ (Accessed: 5 June 2025)
+
+New Web Technology Selected Integration
+I have chosen to integrate Axios in the prototype.
+
+Justification: Axios is more streamlined in HTTP requests and possesses improved error handling compared to the Fetch API. This advantage relates closely to the way in which the app fetches data from PokeAPI, meeting the requirement for robust and effective interaction with external information. Its community support and updatability also meet organizational needs.
+
+Legislative and Organisational Requirements for Axios
+
+Legislative Requirements: Axios is centered around making network requests for public data. It does not introduce new privacy compliance (e.g., GDPR, APP) requirements as it doesn't process personal user data itself.
+
+Organisational Requirements: Axios is an established, well-supported library, constructed to Holmesglen's standards of quality for third-party tools. Its usage provides support for secure data transfer protocols (HTTPS) and may be managed in a Content Security Policy (CSP) for additional security.
+
+CREDITS: 
+
+Pokeball Icon: 
+Slackmojis.com - https://slackmojis.com/emojis/186-pokeball 
+Made by: https://x.com/jkupferman
+
+Contact page wallpaper: 
+alphacoders.com - https://wall.alphacoders.com/big.php?i=1329990
+Made by: https://alphacoders.com/users/profile/227699/patrika 
+

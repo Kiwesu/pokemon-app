@@ -336,6 +336,15 @@ body {
     padding-bottom: var(--spacing-lg); /* Space at the bottom */
 }
 
+.suggestions-container  {
+    display: flex;
+    flex-wrap:  wrap;
+}
+
+.pokemon-card{
+    margin: .5rem;
+}
+
 /* @modifier .visible */
 #suggestions-container.visible, #pokemon-container.visible {
     display: flex; /* Makes container visible and enables flex layout */

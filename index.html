@@ -64,26 +64,23 @@
       </div>
     </nav>
 
-    <main class="search-container">
-      <div class="container">
+    <main class="main-content">
+      <div class="container"> 
         <h1 class="pokemon-logo text-center my-4">Pokémon Tracker</h1>
 
-        <section
-          class="search-section d-flex justify-content-center align-items-center mb-4"
-          aria-label="Pokémon Search"
-        >
-          <div class="input-group w-50">
+        <section class="search-section my-4" aria-label="Pokémon Search">
+          <div class="custom-search-wrapper">
             <label for="pokemon-search" class="visually-hidden">Search Pokémon</label>
             <input
               type="text"
-              class="form-control"
+              class="custom-form-control"
               id="pokemon-search"
               placeholder="Search Pokémon by name or ID..."
               aria-label="Search Pokémon by name or ID"
             />
-            <button class="btn btn-primary" id="search-btn" aria-label="Search">Search</button>
+            <button class="custom-btn custom-btn-primary" id="search-btn" aria-label="Search">Search</button>
             <button
-              class="btn btn-outline-secondary"
+              class="custom-btn custom-btn-outline"
               id="refresh-btn"
               title="Clear Search"
               aria-label="Clear Search Results"
@@ -93,7 +90,7 @@
           </div>
         </section>
 
-        <section class="filters mb-4" aria-label="Filter Pokémon by Type">
+        <section class="filters my-4" aria-label="Filter Pokémon by Type">
           <button class="type-filter" data-type="fire" aria-label="Filter by Fire type">Fire</button>
           <button class="type-filter" data-type="water" aria-label="Filter by Water type">Water</button>
           <button class="type-filter" data-type="electric" aria-label="Filter by Electric type">Electric</button>
@@ -103,14 +100,9 @@
           <button class="type-filter" data-type="fighting" aria-label="Filter by Fighting type">Fighting</button>
         </section>
 
-        <div
-          id="suggestions-container"
-          class="row justify-content-center"
-          aria-live="polite"
-          aria-atomic="true"
-        ></div>
+        <div id="suggestions-container" class="pokemon-display-area" aria-live="polite" aria-atomic="true"></div>
         
-        <div id="pokemon-container" class="row justify-content-center" aria-live="polite"></div>
+        <div id="pokemon-container" class="pokemon-display-area" aria-live="polite"></div>
       </div>
     </main>
     

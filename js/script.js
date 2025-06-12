@@ -1,30 +1,25 @@
-/* global axios */ // DO NOT REMOVE: This line tells ESLint that 'axios' is a global variable, preventing 'no-undef' errors. Our ESLint configuration seems to be stubborn in recognising it.
+/* global axios */ // DO NOT REMOVE: This line tells ESLint that 'axios' is a global variable, preventing 'no-undef' errors.
 
 /**
  * @file script.js
- * @description Manages the core functionality of the Pokémon Tracker application,
- * including fetching, searching, filtering, and displaying Pokémon data.
- * This script serves as the main entry point for the application's interactive features,
- * now utilizing Axios for robust HTTP requests.
+ * @description Manages core Pokémon Tracker functionality: data fetching, search, filtering, and UI display.
+ * Utilizes Axios for robust HTTP requests.
  */
 
 // --- Global Configuration and Constants ---
 
 /**
- * @constant {string} POKEAPI_URL - The base URL for the PokeAPI v2 endpoint.
- * This URL is used to fetch Pokémon data.
+ * @constant {string} POKEAPI_URL - Base URL for PokeAPI v2.
  */
 const POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon/";
 
 /**
- * @constant {number} TOTAL_POKEMON - Limits the number of Pokémon to fetch, primarily for filtering and suggestions.
- * Set to 151 to focus on Generation 1 Pokémon.
+ * @constant {number} TOTAL_POKEMON - Limits fetched Pokémon to Generation 1 (151).
  */
 const TOTAL_POKEMON = 151;
 
 /**
- * @constant {Object.<string, string>} typeColors - A map of Pokémon type names to their corresponding hexadecimal color codes.
- * Used for visual styling of type-related elements, like filter buttons.
+ * @constant {Object.<string, string>} typeColors - Map of Pokémon types to hex color codes for UI styling.
  */
 const typeColors = {
     fire: '#ff0000', water: '#1E90FF', electric: '#FFD700',
@@ -34,52 +29,43 @@ const typeColors = {
     dark: '#705746', fairy: '#D685AD', flying: '#A98FF3'
 };
 
-// --- DOM Element References (Members) ---
+// --- DOM Element References ---
 
-/**
- * @member {HTMLElement} searchInput - Reference to the Pokémon search input field.
- */
+/** @type {HTMLElement} searchInput - Reference to the Pokémon search input field. */
 const searchInput = document.getElementById("pokemon-search");
 
-/**
- * @member {HTMLElement} searchBtn - Reference to the search button.
- */
+/** @type {HTMLElement} searchBtn - Reference to the search button. */
 const searchBtn = document.getElementById("search-btn");
 
-/**
- * @member {HTMLElement} pokemonContainer - Reference to the container where Pokémon cards are displayed.
- */
+/** @type {HTMLElement} pokemonContainer - Container for displaying main Pokémon cards. */
 const pokemonContainer = document.getElementById("pokemon-container");
 
-/**
- * @member {NodeList} filterButtons - A collection of all Pokémon type filter buttons.
- */
+/** @type {NodeList} filterButtons - Collection of Pokémon type filter buttons. */
 const filterButtons = document.querySelectorAll(".type-filter");
 
-/**
- * @member {HTMLElement} suggestionsContainer - A dynamically created container for displaying Pokémon search suggestions.
- */
+/** @type {HTMLElement} suggestionsContainer - Dynamically created container for search suggestions. */
 const suggestionsContainer = document.createElement("div");
 suggestionsContainer.classList.add("suggestions-container");
-suggestionsContainer.classList.add("row", "justify-content-center");
-/**
- * Inserts the suggestions container right after the search input's parent.
- * This placement ensures suggestions appear visually close to the search bar.
- */
-searchInput.parentNode.insertBefore(suggestionsContainer, searchInput.parentNode.querySelector('.filters'));
 
-/**
- * @member {HTMLElement} refreshBtn - Reference to the refresh/reset button.
- * This button clears the search and displayed Pokémon.
- */
+// Correctly insert suggestions container after filters section within the main container.
+const mainContainer = document.querySelector('.container');
+const filtersSection = document.querySelector('.filters');
+
+if (mainContainer && filtersSection) {
+    filtersSection.parentNode.insertBefore(suggestionsContainer, filtersSection.nextSibling);
+} else {
+    console.error("DOM elements for suggestions insertion not found. Appending to body.");
+    document.body.appendChild(suggestionsContainer);
+}
+
+/** @type {HTMLElement} refreshBtn - Reference to the refresh/reset button. */
 const refreshBtn = document.getElementById("refresh-btn");
 
-// --- Global Application State (Members) ---
+// --- Global Application State ---
 
 /**
- * @member {Object.<string, Pokemon>} pokemonCache - A global cache object to store fetched Pokémon data.
- * This prevents redundant API calls for already retrieved Pokémon, improving performance.
- * Keys are normalized Pokémon names or IDs (lowercase strings), values are `Pokemon` objects.
+ * @member {Object.<string, Pokemon>} pokemonCache - Cache for fetched Pokémon data (key: normalized name/ID).
+ * Prevents redundant API calls.
  */
 const pokemonCache = {};
 
@@ -87,56 +73,32 @@ const pokemonCache = {};
 
 /**
  * @class Pokemon
- * @description Represents a Pokémon with its properties and methods to render its UI card.
- * This class encapsulates Pokémon data and presentation logic following OOP principles.
+ * @description Represents a Pokémon with its data and UI rendering logic.
  */
 class Pokemon {
     /**
-     * Creates an instance of Pokemon.
-     * @param {Object} data - The raw Pokémon data object received directly from the PokeAPI.
-     * @property {number} data.id - The unique ID of the Pokémon.
-     * @property {string} data.name - The name of the Pokémon.
-     * @property {Object} data.sprites - An object containing various sprite URLs for the Pokémon.
-     * @property {Array<Object>} data.types - An array of objects describing the Pokémon's types.
-     * @property {Array<Object>} data.stats - An array of objects describing the Pokémon's base stats.
+     * Creates a Pokemon instance.
+     * @param {object} data - Raw Pokémon data from PokeAPI.
+     * @param {number} data.id - Pokémon ID.
+     * @param {string} data.name - Pokémon name.
+     * @param {object} data.sprites - Sprite URLs.
+     * @param {Array<object>} data.types - Pokémon types.
+     * @param {Array<object>} data.stats - Base stats.
      */
     constructor(data) {
-        /**
-         * @member {number} Pokemon#id - The unique identifier for the Pokémon.
-         */
         this.id = data.id;
-        /**
-         * @member {string} Pokemon#name - The name of the Pokémon.
-         */
         this.name = data.name;
-        /**
-         * @member {Object} Pokemon#sprites - Contains URLs for different visual representations of the Pokémon.
-         */
         this.sprites = data.sprites;
-        /**
-         * @member {Array<Object>} Pokemon#types - An array detailing the Pokémon's elemental types.
-         */
         this.types = data.types;
-        /**
-         * @member {Array<Object>} Pokemon#stats - An array of the Pokémon's base stats (e.g., HP, attack, defense).
-         */
         this.stats = data.stats;
-        /**
-         * @member {number} Pokemon#hp - The base HP (Hit Points) of the Pokémon.
-         */
         this.hp = data.stats.find(stat => stat.stat.name === 'hp').base_stat;
     }
 
     /**
-     * Generates and returns the HTML string for a Pokémon card.
-     * This method leverages the Pokémon's properties to construct a displayable card.
-     * @returns {string} The HTML string representing the Pokémon card's structure and data.
+     * Generates HTML string for a Pokémon card.
+     * @returns {string} HTML for the Pokémon card.
      */
     renderCard() {
-        /**
-         * @member {string} typeNames - A comma-separated string of the Pokémon's types.
-         * @private
-         */
         const typeNames = this.types.map(t => t.type.name).join(", ");
         return `
             <div class="card-inner">
@@ -153,428 +115,266 @@ class Pokemon {
 
 /**
  * @function fetchPokemon
- * @description Fetches a single Pokémon's data from PokeAPI using **Axios** or retrieves it from cache if already fetched.
- * This prevents redundant API calls and improves application performance.
- * @param {string|number} idOrName - The ID (e.g., "25") or name (e.g., "pikachu") of the Pokémon to fetch.
- * @returns {Promise<Pokemon|null>} A Promise that resolves to a `Pokemon` object if successful, otherwise `null` if fetching fails or Pokémon is not found.
+ * @description Fetches single Pokémon data from PokeAPI or cache.
+ * @param {string|number} idOrName - Pokémon ID or name.
+ * @returns {Promise<Pokemon|null>} Resolved with Pokemon object or null on failure.
  */
 const fetchPokemon = async (idOrName) => {
-    /**
-     * @member {string} key - The normalized (lowercase string) identifier used for caching and API requests.
-     * @private
-     */
     const key = String(idOrName).toLowerCase();
-
-    // Check if the Pokémon data is already in the cache.
-    if (pokemonCache[key]) {
-        return pokemonCache[key]; // Return cached Pokemon object
-    }
+    if (pokemonCache[key]) return pokemonCache[key];
 
     try {
-        /**
-         * @member {Object} response - The Axios response object from the PokeAPI.
-         * @private
-         */
         const response = await axios.get(`${POKEAPI_URL}${key}`);
-        /**
-         * @member {Object} data - The raw Pokémon data directly from `response.data`.
-         * @private
-         */
-        const data = response.data;
-        /**
-         * @member {Pokemon} pokemon - An instance of the Pokemon class created from the fetched data.
-         * @private
-         */
-        const pokemon = new Pokemon(data);
-        pokemonCache[key] = pokemon; // Cache the Pokemon object
+        const pokemon = new Pokemon(response.data);
+        pokemonCache[key] = pokemon;
         return pokemon;
     } catch (error) {
-        // Enhanced Axios error handling for specific scenarios
+        // Log detailed error information for debugging.
         if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx (e.g., 404 Not Found)
-            if (error.response.status === 404) {
-                console.warn(`Pokémon '${key}' not found (Status: 404).`);
-            } else {
-                console.error(`Error fetching Pokémon ${key}:`, error.response.status, error.response.data);
-            }
+            console.warn(`Fetch error for '${key}': Status ${error.response.status}`, error.response.data);
         } else if (error.request) {
-            // The request was made but no response was received (e.g., network error)
-            console.error("No response received from PokeAPI:", error.request);
+            console.error(`Network error for '${key}': No response received.`, error.request);
         } else {
-            // Something happened in setting up the request that triggered an Error
-            console.error("Error setting up Axios request:", error.message);
+            console.error(`Axios request setup error for '${key}':`, error.message);
         }
-        return null; // Return null if fetching fails
+        return null;
     }
 };
 
 /**
  * @function fetchSuggestions
- * @description Fetches and displays Pokémon name suggestions based on user input in the search bar, using **Axios**.
- * It currently fetches a subset of all Pokémon (Gen 1) and filters locally.
- * @param {string} query - The search query string entered by the user.
- * @returns {Promise<void>} A Promise that resolves when suggestions are fetched and displayed, or an error occurs.
+ * @description Fetches and displays Pokémon name suggestions based on user input.
+ * @param {string} query - Search query string.
+ * @returns {Promise<void>}
  */
 const fetchSuggestions = async (query) => {
-    // Hide suggestions if the query is empty.
     if (!query) {
         suggestionsContainer.innerHTML = "";
         suggestionsContainer.style.display = "none";
+        suggestionsContainer.classList.remove("visible");
         return;
     }
 
     try {
-        // Fetch a broader list or consider a more efficient suggestion API if available
-        // For simplicity, fetching first 151 and filtering locally.
-        /**
-         * @member {Object} response - The Axios response object for the list of Pokémon.
-         * @private
-         */
         const response = await axios.get(`${POKEAPI_URL}?limit=${TOTAL_POKEMON}&offset=0`);
-        /**
-         * @member {Object} data - The parsed JSON data containing the list of Pokémon names from `response.data`.
-         * @private
-         */
-        const data = response.data;
-
-        // Filter Pokémon names that include the query.
-        /**
-         * @member {Array<Object>} matchingNames - An array of Pokémon objects whose names match the query.
-         * @private
-         */
-        const matchingNames = data.results.filter(pokemon =>
+        const matchingNames = response.data.results.filter(pokemon =>
             pokemon.name.toLowerCase().includes(query.toLowerCase())
         );
 
-        // Fetch detailed data for each matching suggestion concurrently.
-        /**
-         * @member {Array<Promise<Pokemon|null>>} detailedSuggestions - An array of Promises, each resolving to a detailed Pokemon object or null.
-         * @private
-         */
         const detailedSuggestions = await Promise.all(
             matchingNames.map(suggestion => fetchPokemon(suggestion.name))
         );
-
-        // Filter out any null results (Pokémon that couldn't be fetched) to ensure valid Pokemon objects.
-        /**
-         * @member {Pokemon[]} validSuggestions - An array of valid Pokemon objects for display.
-         * @private
-         */
         const validSuggestions = detailedSuggestions.filter(pokemon => pokemon instanceof Pokemon);
 
         displaySuggestions(validSuggestions);
     } catch (error) {
-        // Generic error handling for suggestions fetch
         console.error("Error fetching suggestions:", error);
         suggestionsContainer.innerHTML = "<p>Error loading suggestions.</p>";
         suggestionsContainer.style.display = "flex";
+        suggestionsContainer.classList.add("visible");
     }
 };
 
 /**
  * @function displaySuggestions
- * @description Clears existing suggestions and displays a list of Pokémon as interactive cards
- * within the suggestions container.
- * @param {Pokemon[]} suggestions - An array of `Pokemon` objects to display as suggestions.
- * Each object should have a `renderCard()` method.
+ * @description Clears and displays Pokémon cards as interactive suggestions.
+ * @param {Pokemon[]} suggestions - Array of Pokemon objects for suggestions.
  * @returns {void}
  */
 const displaySuggestions = (suggestions) => {
-    suggestionsContainer.innerHTML = ""; // Clear previous suggestions
+    suggestionsContainer.innerHTML = "";
 
-    // Hide suggestions container if no suggestions are provided.
     if (suggestions.length === 0) {
         suggestionsContainer.style.display = "none";
+        suggestionsContainer.classList.remove("visible");
         return;
     }
 
-    suggestionsContainer.style.display = "flex"; // Show suggestions container using flexbox for layout
+    suggestionsContainer.style.display = "flex";
+    suggestionsContainer.classList.add("visible");
 
-    /**
-     * @member {DocumentFragment} fragment - A lightweight DOM object used to build the list of cards
-     * before appending them to the live DOM, optimizing performance.
-     * @private
-     */
     const fragment = document.createDocumentFragment();
-
     suggestions.forEach(pokemon => {
-        /**
-         * @member {HTMLElement} card - The div element representing a single Pokémon card.
-         * @private
-         */
         const card = document.createElement("div");
-        card.className = "pokemon-card col-auto"; // Add Bootstrap column class for responsiveness
-        card.innerHTML = pokemon.renderCard(); // Use the Pokemon object's renderCard method
+        card.className = "pokemon-card";
+        card.innerHTML = pokemon.renderCard();
 
-        // Add a click listener to select the suggested Pokémon.
         card.addEventListener("click", () => {
-            searchInput.value = pokemon.name; // Set input to the clicked suggestion
-            searchPokemons(pokemon.name);      // Perform search with the selected suggestion
-            suggestionsContainer.innerHTML = ""; // Clear suggestions after selection
-            suggestionsContainer.style.display = "none"; // Hide suggestions container
+            searchInput.value = pokemon.name;
+            searchPokemons(pokemon.name);
+            suggestionsContainer.innerHTML = "";
+            suggestionsContainer.style.display = "none";
+            suggestionsContainer.classList.remove("visible");
         });
         fragment.appendChild(card);
     });
 
     suggestionsContainer.appendChild(fragment);
-    pokemonContainer.style.display = "none"; // Hide main results when suggestions are active
+    pokemonContainer.style.display = "none";
+    pokemonContainer.classList.remove("visible");
 };
 
 /**
  * @function displayPokemon
- * @description Clears the main Pokémon container and displays a list of Pokémon as cards within it.
- * @param {Pokemon[]} list - An array of `Pokemon` objects to display.
- * Each object is expected to have a `renderCard()` method.
+ * @description Clears and displays Pokémon cards in the main container.
+ * @param {Pokemon[]} list - Array of Pokemon objects to display.
  * @returns {void}
  */
 const displayPokemon = (list) => {
-    // Prevent execution if the Pokémon container element is not found.
     if (!pokemonContainer) return;
 
-    pokemonContainer.innerHTML = ""; // Clear previous results
-    /**
-     * @member {DocumentFragment} fragment - A lightweight DOM object used to build the list of cards
-     * before appending them to the live DOM, optimizing performance.
-     * @private
-     */
-    const fragment = document.createDocumentFragment();
+    pokemonContainer.innerHTML = "";
+    pokemonContainer.style.display = "flex";
+    pokemonContainer.classList.add("visible");
 
+    const fragment = document.createDocumentFragment();
     list.forEach(pokemon => {
-        /**
-         * @member {HTMLElement} card - The div element representing a single Pokémon card.
-         * @private
-         */
         const card = document.createElement("div");
-        card.className = "pokemon-card col-auto"; // Add Bootstrap column class for responsiveness
-        card.innerHTML = pokemon.renderCard(); // Use the Pokemon object's renderCard method
+        card.className = "pokemon-card";
+        card.innerHTML = pokemon.renderCard();
         fragment.appendChild(card);
     });
 
     pokemonContainer.appendChild(fragment);
 
-    // Show the container after displaying Pokémon cards, using flex display for card arrangement.
-    pokemonContainer.style.display = "flex";
-    suggestionsContainer.style.display = "none"; // Hide suggestions when main results are shown
+    suggestionsContainer.innerHTML = "";
+    suggestionsContainer.style.display = "none";
+    suggestionsContainer.classList.remove("visible");
 };
 
 /**
  * @function searchPokemons
- * @description Initiates a search for a Pokémon based on the provided query or the current input field value.
- * Displays the result in the main Pokémon container or an error message if not found or no input.
- * @param {string} [searchQuery=searchInput.value.trim().toLowerCase()] - The Pokémon name or ID to search for.
- * If not provided, it defaults to the current trimmed, lowercase value of the search input field.
- * @returns {Promise<void>} A Promise that resolves when the search operation is complete.
+ * @description Initiates Pokémon search, displaying results or error messages.
+ * @param {string} [searchQuery] - Pokémon name or ID. Defaults to search input value.
+ * @returns {Promise<void>}
  */
 const searchPokemons = async (searchQuery = searchInput.value.trim().toLowerCase()) => {
-    // Check if the search query is empty and display an error if it is.
     if (!searchQuery) {
         pokemonContainer.innerHTML = "<p style='color: red; margin-top: 15px; text-align: center;'>Please type a Pokémon name or ID to search.</p>";
-        pokemonContainer.style.display = "flex"; // Ensure the container is visible to show the message
-        suggestionsContainer.innerHTML = ""; // Clear any lingering suggestions
+        pokemonContainer.style.display = "flex";
+        pokemonContainer.classList.add("visible");
+        suggestionsContainer.innerHTML = "";
         suggestionsContainer.style.display = "none";
-        return; // Stop function execution as no search can be performed
+        suggestionsContainer.classList.remove("visible");
+        return;
     }
 
-    /**
-     * @member {Pokemon|null} pokemon - The fetched `Pokemon` object or `null` if not found.
-     * @private
-     */
     const pokemon = await fetchPokemon(searchQuery);
     if (pokemon) {
-        displayPokemon([pokemon]); // Display the single fetched Pokémon object
+        displayPokemon([pokemon]);
     } else {
-        // Display a "Pokémon not found!" message if a search was performed but yielded no result.
         pokemonContainer.innerHTML = "<p style='color: red; margin-top: 15px; text-align: center;'>Pokémon not found!</p>";
-        pokemonContainer.style.display = "flex"; // Show container with message
+        pokemonContainer.style.display = "flex";
+        pokemonContainer.classList.add("visible");
     }
 
-    // Clear and hide suggestions after a direct search has been performed.
     suggestionsContainer.innerHTML = "";
     suggestionsContainer.style.display = "none";
+    suggestionsContainer.classList.remove("visible");
 };
 
 // --- Helper Function ---
 
 /**
  * @function resetSearch
- * @description Resets the search input field, clears any currently displayed Pokémon cards,
- * and hides both the main Pokémon container and the suggestions container.
+ * @description Resets search input, clears and hides displayed Pokémon and suggestions.
  * @returns {void}
  */
 const resetSearch = () => {
-    searchInput.value = ""; // Clear the search input field
-    pokemonContainer.innerHTML = ""; // Clear displayed Pokémon cards
-    pokemonContainer.style.display = "none"; // Hide the main Pokémon container
-    suggestionsContainer.innerHTML = ""; // Clear suggestions
-    suggestionsContainer.style.display = "none"; // Hide suggestions container
-    // Future Enhancement: You might want to clear any active filters here too if applicable,
-    // for example, by removing an active state from type filter buttons.
+    searchInput.value = "";
+    pokemonContainer.innerHTML = "";
+    pokemonContainer.style.display = "none";
+    pokemonContainer.classList.remove("visible");
+    suggestionsContainer.innerHTML = "";
+    suggestionsContainer.style.display = "none";
+    suggestionsContainer.classList.remove("visible");
 };
 
 // --- Event Listeners Section ---
 
 /**
- * @description This section defines and attaches all necessary event listeners
- * to interactive elements within the Pokémon Tracker application.
+ * @description Attaches event listeners to interactive UI elements.
  */
 
-/**
- * @description Iterates over each type filter button and attaches event listeners for
- * click, mouseenter, and mouseleave events to handle filtering and visual feedback.
- */
+// Type filter buttons: fetch and display Pokémon of selected type.
 filterButtons.forEach(btn => {
-    /**
-     * @method click - Event listener for type filter button clicks.
-     * @description Fetches all Pokémon of the selected type and displays them in the main container.
-     * Clears any active search input or suggestions before filtering.
-     * @param {Event} event - The DOM click event object.
-     */
     btn.addEventListener("click", async (event) => {
-        /**
-         * @member {string} type - The Pokémon type derived from the button's `data-type` attribute.
-         * @private
-         */
         const type = event.currentTarget.dataset.type;
-
-        // Clear search input and suggestions when a type filter is applied.
         searchInput.value = "";
         suggestionsContainer.innerHTML = "";
         suggestionsContainer.style.display = "none";
+        suggestionsContainer.classList.remove("visible");
 
         try {
-            // Fetch all Pokémon associated with the clicked type using Axios.
-            /**
-             * @member {Object} response - The Axios response object for the type-specific Pokémon list.
-             * @private
-             */
             const response = await axios.get(`https://pokeapi.co/api/v2/type/${type}`);
-            /**
-             * @member {Object} data - The parsed JSON data containing the list of Pokémon for the specified type from `response.data`.
-             * @private
-             */
-            const data = response.data;
-
-            // Extract Pokémon names from the type data, limiting to TOTAL_POKEMON (Gen 1).
-            /**
-             * @member {Array<string>} pokemonNamesForType - An array of Pokémon names belonging to the selected type.
-             * @private
-             */
-            const pokemonNamesForType = data.pokemon
+            const pokemonNamesForType = response.data.pokemon
                 .map(p => p.pokemon.name)
                 .filter((name, index) => index < TOTAL_POKEMON);
 
-            // Fetch detailed data for each Pokémon of this type concurrently.
-            /**
-             * @member {Array<Promise<Pokemon|null>>} detailedPokemons - An array of Promises, each resolving to a detailed Pokemon object or null.
-             * @private
-             */
             const detailedPokemons = await Promise.all(
                 pokemonNamesForType.map(pokemonName => fetchPokemon(pokemonName))
             );
-
-            // Filter out any null results (Pokémon that couldn't be fetched successfully).
-            /**
-             * @member {Pokemon[]} filteredPokemons - An array of valid Pokemon objects of the selected type.
-             * @private
-             */
             const filteredPokemons = detailedPokemons.filter(pokemon => pokemon instanceof Pokemon);
 
             if (filteredPokemons.length > 0) {
-                displayPokemon(filteredPokemons); // Display the filtered Pokémon objects
+                displayPokemon(filteredPokemons);
             } else {
                 pokemonContainer.innerHTML = `<p class='text-white mt-5'>No Pokémon found for type: ${type}.</p>`;
                 pokemonContainer.style.display = "flex";
+                pokemonContainer.classList.add("visible");
             }
         } catch (error) {
-            // Enhanced Axios error handling for type filtering
             if (error.response) {
-                console.error(`Error fetching Pokémon for type '${type}':`, error.response.status, error.response.data);
+                console.error(`Fetch error for type '${type}': Status ${error.response.status}`, error.response.data);
             } else if (error.request) {
-                console.error("No response received for type fetch:", error.request);
+                console.error(`Network error for type '${type}': No response received.`, error.request);
             } else {
-                console.error("Error setting up Axios request for type fetch:", error.message);
+                console.error(`Axios request setup error for type '${type}':`, error.message);
             }
             pokemonContainer.innerHTML = "<p class='text-white mt-5'>Error loading Pokémon for this type.</p>";
             pokemonContainer.style.display = "flex";
+            pokemonContainer.classList.add("visible");
         }
     });
 
-    /**
-     * @method mouseenter - Event listener for mouse entering a type filter button.
-     * @description Changes the background color of the button to its corresponding Pokémon type color.
-     * @param {Event} event - The DOM mouseenter event object.
-     */
+    // Hover effects for type filter buttons.
     btn.addEventListener("mouseenter", (event) => {
-        /**
-         * @member {string} type - The Pokémon type obtained from the button's `data-type` attribute.
-         * @private
-         */
         const type = event.currentTarget.dataset.type;
-        event.currentTarget.style.backgroundColor = typeColors[type] || '#3d7dca'; // Default if type color not found
+        event.currentTarget.style.backgroundColor = typeColors[type] || '#3d7dca';
     });
 
-    /**
-     * @method mouseleave - Event listener for mouse leaving a type filter button.
-     * @description Resets the background color of the button to its default secondary color.
-     * @param {Event} event - The DOM mouseleave event object.
-     */
     btn.addEventListener("mouseleave", (event) => {
-        event.currentTarget.style.backgroundColor = '#3d7dca'; // Reset to default blue
+        event.currentTarget.style.backgroundColor = '#3d7dca';
     });
 });
 
-/**
- * @description Event listener for the main search button.
- * Triggers the Pokémon search functionality when clicked.
- * @param {Event} event - The DOM click event object.
- */
+// Search button click event.
 searchBtn.addEventListener("click", () => {
     searchPokemons();
 });
 
-// --- ADDED EVENT LISTENER FOR REFRESH BUTTON ---
-/**
- * @description Event listener for the refresh/reset button.
- * Triggers the `resetSearch` function when clicked, clearing the UI.
- * @param {Event} event - The DOM click event object.
- */
+// Refresh button click event.
 refreshBtn.addEventListener("click", () => {
     resetSearch();
 });
 
-/**
- * @description Event listener for keydown events on the search input field.
- * Triggers the Pokémon search functionality when the "Enter" key is pressed.
- * @param {KeyboardEvent} event - The keyboard event object, containing information about the key pressed.
- */
+// Search input: Enter key triggers search.
 searchInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
         searchPokemons();
     }
 });
 
-/**
- * @description Event listener for input changes in the search input field.
- * Triggers fetching and displaying of Pokémon suggestions dynamically based on the current query.
- * @param {Event} event - The DOM input event object.
- */
+// Search input: dynamic suggestions on input change.
 searchInput.addEventListener("input", (event) => {
-    /**
-     * @member {string} query - The current trimmed value of the search input field.
-     * @private
-     */
     const query = event.target.value.trim();
     fetchSuggestions(query);
 });
 
-/**
- * @description Initial setup when the DOM (Document Object Model) is fully loaded.
- * Ensures that the main Pokémon display containers are hidden on initial page load,
- * providing a clean starting UI.
- * @param {Event} event - The DOMContentLoaded event object.
- */
+// Initial setup: Hide display containers on page load.
 window.addEventListener("DOMContentLoaded", () => {
-    pokemonContainer.style.display = "none"; // Hide main Pokémon results container
-    suggestionsContainer.style.display = "none"; // Hide suggestions container
+    pokemonContainer.style.display = "none";
+    suggestionsContainer.style.display = "none";
+    pokemonContainer.classList.remove("visible");
+    suggestionsContainer.classList.remove("visible");
 });
